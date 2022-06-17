@@ -34,22 +34,28 @@ function App() {
     };
     await fetch(`${apiUrl}/user/login`, opts)
       .then((res) => res.json())
-      .then((token) => localStorage.setItem("token", token.data));
+      .then((token) => {
+        localStorage.setItem("token", token.data)
+        console.log(`token for ${username} is ${token.data}`)
+      });
   };
   
   const handleCreateMovie = async ({ title, description, runtimeMins }) => {
-  //   const opts = {
-  //     method: "POST",
-  //     headers: { 
-  //       "Content-Type": "application/json",
-  //        authorization: localStorage.getItem("token"),
-  //  },
-  //     body: JSON.stringify({title, description, runtimeMins}),
-  //   };
-  //   console.log(opts)
-  //   await fetch(`${apiUrl}/movie`, opts)
-  //     .then((res) => res.json())
-  //     .then((createMovie) => setMovies([...movies, createMovie.data]));
+    const userToken = localStorage.getItem("token");
+    console.log(`This is userToken ${userToken}`)
+
+    const opts = {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+   },
+      body: JSON.stringify({title, description, runtimeMins}),
+    };
+    console.log(opts)
+    await fetch(`${apiUrl}/movie`, opts)
+      .then((res) => res.json())
+      .then((createMovie) => setMovies([...movies, createMovie.data]));
   }
 
   return (
